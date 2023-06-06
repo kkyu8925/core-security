@@ -28,13 +28,13 @@ class SecurityConfig {
         val sys = User
             .withUsername("manager")
             .password(password)
-            .roles("MANAGER")
+            .roles("MANAGER", "USER")
             .build()
 
         val admin = User
             .withUsername("admin")
             .password(password)
-            .roles("ADMIN")
+            .roles("ADMIN", "USER", "MANAGER")
             .build()
 
         return InMemoryUserDetailsManager(user, sys, admin)
