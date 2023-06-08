@@ -22,23 +22,9 @@ class SecurityConfig {
     fun userDetailsService(): UserDetailsService {
         val password = passwordEncoder().encode("1234")
 
-        val user = User
-            .withUsername("user")
-            .password(password)
-            .roles("USER")
-            .build()
-
-        val sys = User
-            .withUsername("manager")
-            .password(password)
-            .roles("MANAGER", "USER")
-            .build()
-
-        val admin = User
-            .withUsername("admin")
-            .password(password)
-            .roles("ADMIN", "USER", "MANAGER")
-            .build()
+        val user = User.withUsername("user").password(password).roles("USER").build()
+        val sys = User.withUsername("manager").password(password).roles("MANAGER", "USER").build()
+        val admin = User.withUsername("admin").password(password).roles("ADMIN", "USER", "MANAGER").build()
 
         return InMemoryUserDetailsManager(user, sys, admin)
     }
@@ -52,20 +38,24 @@ class SecurityConfig {
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer {
             it.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .requestMatchers("/h2-console/**")
         }
     }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeHttpRequests {
-            it
-                .requestMatchers("/").permitAll()
+            it.requestMatchers("/", "/users").permitAll()
                 .requestMatchers("/mypage").hasRole("USER")
                 .requestMatchers("/messages").hasRole("MANAGER")
                 .requestMatchers("/config").hasRole("ADMIN")
                 .anyRequest().authenticated()
         }.formLogin {
             it.failureForwardUrl("/login")
+        }.csrf {
+            it.disable()
+        }.headers {
+            it.frameOptions { frameOption -> frameOption.disable() }
         }.build()
     }
 }
