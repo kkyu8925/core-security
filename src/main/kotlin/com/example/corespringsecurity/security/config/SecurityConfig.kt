@@ -47,7 +47,10 @@ class SecurityConfig {
                 .requestMatchers("/config").hasRole("ADMIN")
                 .anyRequest().authenticated()
         }.formLogin {
-            it.failureForwardUrl("/login")
+            it.loginPage("/login")
+                .loginProcessingUrl("/login_proc")
+                .defaultSuccessUrl("/")
+                .permitAll()
         }.csrf {
             it.disable()
         }.headers {
