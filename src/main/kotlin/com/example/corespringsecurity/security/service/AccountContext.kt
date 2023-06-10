@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 
 class AccountContext(
-    account: Account, authorities: Collection<GrantedAuthority>
+    val account: Account, authorities: Collection<GrantedAuthority>
 ) : User(
     account.username, account.password, authorities
 )
