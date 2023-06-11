@@ -21,10 +21,10 @@ class CustomFormAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHan
     ) {
         val savedRequest = requestCache.getRequest(request, response)
 
-        if (savedRequest.redirectUrl == null) {
+        if (savedRequest == null) {
             redirectStrategy.sendRedirect(request, response, "/")
+        } else {
+            redirectStrategy.sendRedirect(request, response, savedRequest.redirectUrl)
         }
-
-        redirectStrategy.sendRedirect(request, response, savedRequest.redirectUrl)
     }
 }

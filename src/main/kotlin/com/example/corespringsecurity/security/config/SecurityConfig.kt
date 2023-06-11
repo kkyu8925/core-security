@@ -43,6 +43,7 @@ class SecurityConfig(
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer {
             it.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .requestMatchers("/error")
                 .requestMatchers("/h2-console/**")
         }
     }
