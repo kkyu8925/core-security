@@ -1,6 +1,7 @@
 package com.example.corespringsecurity.security.config
 
 import com.example.corespringsecurity.security.common.FormWebAuthenticationDetailsSource
+import com.example.corespringsecurity.security.handler.FormAuthenticationSuccessHandler
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val formWebAuthenticationDetailsSource: FormWebAuthenticationDetailsSource
+    private val formWebAuthenticationDetailsSource: FormWebAuthenticationDetailsSource,
+    private val formAuthenticationSuccessHandler : FormAuthenticationSuccessHandler
 ) {
 
 //    @Bean
@@ -53,6 +55,7 @@ class SecurityConfig(
             it.loginPage("/login")
                 .loginProcessingUrl("/login_proc")
                 .defaultSuccessUrl("/")
+                .successHandler(formAuthenticationSuccessHandler)
                 .authenticationDetailsSource(formWebAuthenticationDetailsSource)
                 .permitAll()
         }.csrf {
