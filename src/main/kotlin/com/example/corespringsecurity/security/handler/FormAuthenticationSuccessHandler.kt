@@ -17,16 +17,14 @@ class FormAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler()
     private val redirectStrategy: RedirectStrategy = DefaultRedirectStrategy()
 
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        authentication: Authentication
+        request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
     ) {
-        defaultTargetUrl = "/"
         val savedRequest = requestCache.getRequest(request, response)
+
         if (savedRequest.redirectUrl == null) {
-            redirectStrategy.sendRedirect(request, response, defaultTargetUrl)
+            redirectStrategy.sendRedirect(request, response, "/")
         }
-        val targetUrl = savedRequest.redirectUrl
-        redirectStrategy.sendRedirect(request, response, targetUrl)
+
+        redirectStrategy.sendRedirect(request, response, savedRequest.redirectUrl)
     }
 }

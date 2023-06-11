@@ -1,6 +1,7 @@
 package com.example.corespringsecurity.security.config
 
 import com.example.corespringsecurity.security.common.FormWebAuthenticationDetailsSource
+import com.example.corespringsecurity.security.handler.FormAuthenticationFailureHandler
 import com.example.corespringsecurity.security.handler.FormAuthenticationSuccessHandler
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -16,7 +17,8 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableWebSecurity
 class SecurityConfig(
     private val formWebAuthenticationDetailsSource: FormWebAuthenticationDetailsSource,
-    private val formAuthenticationSuccessHandler : FormAuthenticationSuccessHandler
+    private val formAuthenticationSuccessHandler: FormAuthenticationSuccessHandler,
+    private val formAuthenticationFailureHandler: FormAuthenticationFailureHandler
 ) {
 
 //    @Bean
@@ -46,7 +48,7 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeHttpRequests {
-            it.requestMatchers("/", "/users").permitAll()
+            it.requestMatchers("/", "/users", "user/login/**", "/login*").permitAll()
                 .requestMatchers("/mypage").hasRole("USER")
                 .requestMatchers("/messages").hasRole("MANAGER")
                 .requestMatchers("/config").hasRole("ADMIN")
@@ -56,6 +58,7 @@ class SecurityConfig(
                 .loginProcessingUrl("/login_proc")
                 .defaultSuccessUrl("/")
                 .successHandler(formAuthenticationSuccessHandler)
+                .failureHandler(formAuthenticationFailureHandler)
                 .authenticationDetailsSource(formWebAuthenticationDetailsSource)
                 .permitAll()
         }.csrf {
