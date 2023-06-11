@@ -1,8 +1,9 @@
 package com.example.corespringsecurity.security.config
 
-import com.example.corespringsecurity.security.common.FormWebAuthenticationDetailsSource
-import com.example.corespringsecurity.security.handler.FormAuthenticationFailureHandler
-import com.example.corespringsecurity.security.handler.FormAuthenticationSuccessHandler
+import com.example.corespringsecurity.security.common.CustomFormWebAuthenticationDetailsSource
+import com.example.corespringsecurity.security.handler.CustomFormAccessDeniedHandler
+import com.example.corespringsecurity.security.handler.CustomFormAuthenticationFailureHandler
+import com.example.corespringsecurity.security.handler.CustomFormAuthenticationSuccessHandler
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,9 +17,10 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val formWebAuthenticationDetailsSource: FormWebAuthenticationDetailsSource,
-    private val formAuthenticationSuccessHandler: FormAuthenticationSuccessHandler,
-    private val formAuthenticationFailureHandler: FormAuthenticationFailureHandler
+    private val customFormWebAuthenticationDetailsSource: CustomFormWebAuthenticationDetailsSource,
+    private val customFormAuthenticationSuccessHandler: CustomFormAuthenticationSuccessHandler,
+    private val customFormAuthenticationFailureHandler: CustomFormAuthenticationFailureHandler,
+    private val customFormAccessDeniedHandler: CustomFormAccessDeniedHandler
 ) {
 
 //    @Bean
@@ -57,10 +59,12 @@ class SecurityConfig(
             it.loginPage("/login")
                 .loginProcessingUrl("/login_proc")
                 .defaultSuccessUrl("/")
-                .successHandler(formAuthenticationSuccessHandler)
-                .failureHandler(formAuthenticationFailureHandler)
-                .authenticationDetailsSource(formWebAuthenticationDetailsSource)
+                .successHandler(customFormAuthenticationSuccessHandler)
+                .failureHandler(customFormAuthenticationFailureHandler)
+                .authenticationDetailsSource(customFormWebAuthenticationDetailsSource)
                 .permitAll()
+        }.exceptionHandling {
+            it.accessDeniedHandler(customFormAccessDeniedHandler)
         }.csrf {
             it.disable()
         }.headers {

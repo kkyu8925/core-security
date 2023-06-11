@@ -11,7 +11,7 @@ import org.springframework.security.web.savedrequest.RequestCache
 import org.springframework.stereotype.Component
 
 @Component
-class FormAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler() {
+class CustomFormAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler() {
 
     private val requestCache: RequestCache = HttpSessionRequestCache()
     private val redirectStrategy: RedirectStrategy = DefaultRedirectStrategy()

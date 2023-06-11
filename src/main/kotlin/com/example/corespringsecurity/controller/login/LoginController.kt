@@ -1,5 +1,6 @@
 package com.example.corespringsecurity.controller.login
 
+import com.example.corespringsecurity.domain.Account
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
@@ -35,5 +36,19 @@ class LoginController {
         val authentication = SecurityContextHolder.getContext().authentication
         SecurityContextLogoutHandler().logout(request, response, authentication)
         return "redirect:/login"
+    }
+
+    @GetMapping("/denied")
+    fun accessDenied(
+        @RequestParam(value = "exception", required = false) exception: String?,
+        model: Model
+    ): String {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val account = authentication.principal as Account
+
+        model.addAttribute("username", account.username)
+        model.addAttribute("exception", exception)
+
+        return "user/login/denied"
     }
 }

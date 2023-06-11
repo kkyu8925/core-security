@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component
 
 @Component
-class FormAuthenticationFailureHandler : SimpleUrlAuthenticationFailureHandler() {
+class CustomFormAuthenticationFailureHandler : SimpleUrlAuthenticationFailureHandler() {
 
     override fun onAuthenticationFailure(
         request: HttpServletRequest, response: HttpServletResponse, exception: AuthenticationException
