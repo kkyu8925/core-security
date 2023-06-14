@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class CustomUserDetailsService(
@@ -14,8 +15,9 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val account =
-            userRepository.findByUsername(username) ?: throw UsernameNotFoundException("UsernameNotFoundException")
+        val account = userRepository.findByUsername(username).getOrElse {
+            throw UsernameNotFoundException("UsernameNotFoundException")
+        }
 
         val roles: MutableList<GrantedAuthority> = ArrayList()
         roles.add(SimpleGrantedAuthority(account.role))
