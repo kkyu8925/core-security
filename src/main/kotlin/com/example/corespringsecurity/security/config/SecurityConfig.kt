@@ -1,15 +1,13 @@
 package com.example.corespringsecurity.security.config
 
 import com.example.corespringsecurity.security.common.CustomFormWebAuthenticationDetailsSource
-import com.example.corespringsecurity.security.filter.AjaxLoginProcessingFilter
 import com.example.corespringsecurity.security.handler.CustomFormAccessDeniedHandler
 import com.example.corespringsecurity.security.handler.CustomFormAuthenticationFailureHandler
 import com.example.corespringsecurity.security.handler.CustomFormAuthenticationSuccessHandler
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -19,8 +17,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
+@Order(1)
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
@@ -56,14 +54,8 @@ class SecurityConfig(
     }
 
     @Bean
-    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
-        return authenticationConfiguration.authenticationManager
-    }
-
-    @Bean
     fun securityFilterChain(
-        http: HttpSecurity,
-        authenticationConfiguration: AuthenticationConfiguration
+        http: HttpSecurity
     ): SecurityFilterChain {
         return http.authorizeHttpRequests {
             it.requestMatchers("/", "/users", "user/login/**", "/login*").permitAll()
@@ -81,20 +73,10 @@ class SecurityConfig(
                 .permitAll()
         }.exceptionHandling {
             it.accessDeniedHandler(customFormAccessDeniedHandler)
-        }.addFilterBefore(
-            ajaxLoginProcessingFilter(authenticationConfiguration), UsernamePasswordAuthenticationFilter::class.java
-        )
-            .csrf {
-                it.disable()
-            }.headers {
-                it.frameOptions { frameOption -> frameOption.disable() }
-            }.build()
-    }
-
-    @Bean
-    fun ajaxLoginProcessingFilter(authenticationConfiguration: AuthenticationConfiguration): AjaxLoginProcessingFilter {
-        val ajaxLoginProcessingFilter = AjaxLoginProcessingFilter()
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager(authenticationConfiguration))
-        return ajaxLoginProcessingFilter
+        }.csrf {
+            it.disable()
+        }.headers {
+            it.frameOptions { frameOption -> frameOption.disable() }
+        }.build()
     }
 }
