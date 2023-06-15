@@ -11,11 +11,8 @@ import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 
 @Order(1)
@@ -28,16 +25,16 @@ class SecurityConfig(
     private val customFormAccessDeniedHandler: CustomFormAccessDeniedHandler
 ) {
 
-    @Bean
-    fun userDetailsService(): UserDetailsService {
-        val password = passwordEncoder().encode("1111")
-
-        val user = User.withUsername("user").password(password).roles("USER").build()
-        val sys = User.withUsername("manager").password(password).roles("MANAGER", "USER").build()
-        val admin = User.withUsername("admin").password(password).roles("ADMIN", "USER", "MANAGER").build()
-
-        return InMemoryUserDetailsManager(user, sys, admin)
-    }
+//    @Bean
+//    fun userDetailsService(): UserDetailsService {
+//        val password = passwordEncoder().encode("1111")
+//
+//        val user = User.withUsername("user").password(password).roles("USER").build()
+//        val sys = User.withUsername("manager").password(password).roles("MANAGER", "USER").build()
+//        val admin = User.withUsername("admin").password(password).roles("ADMIN", "USER", "MANAGER").build()
+//
+//        return InMemoryUserDetailsManager(user, sys, admin)
+//    }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {

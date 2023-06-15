@@ -1,5 +1,6 @@
 package com.example.corespringsecurity.security.provider
 
+import com.example.corespringsecurity.security.service.AccountContext
 import com.example.corespringsecurity.security.token.AjaxAuthenticationToken
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
@@ -19,13 +20,13 @@ class AjaxAuthenticationProvider(
     override fun authenticate(authentication: Authentication): Authentication {
         val loginId = authentication.name
         val password = authentication.credentials as String
-        val loadUserByUsername = userDetailsService.loadUserByUsername(loginId)
+        val accountContext = userDetailsService.loadUserByUsername(loginId) as AccountContext
 
-        if (!passwordEncoder.matches(password, loadUserByUsername.password)) {
+        if (!passwordEncoder.matches(password, accountContext.password)) {
             throw BadCredentialsException("Invalid password")
         }
 
-        return AjaxAuthenticationToken(loadUserByUsername.username, null, loadUserByUsername.authorities)
+        return AjaxAuthenticationToken(accountContext.account, null, accountContext.authorities)
     }
 
     override fun supports(authentication: Class<*>): Boolean {
