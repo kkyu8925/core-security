@@ -51,9 +51,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun securityFilterChain(
-        http: HttpSecurity
-    ): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeHttpRequests {
             it.requestMatchers("/", "/users", "user/login/**", "/login*").permitAll()
                 .requestMatchers("/mypage").hasRole("USER")

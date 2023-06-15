@@ -1,6 +1,6 @@
 package com.example.corespringsecurity.controller.login
 
-import com.example.corespringsecurity.domain.Account
+import com.example.corespringsecurity.security.service.AccountContext
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
@@ -44,7 +44,7 @@ class LoginController {
         model: Model
     ): String {
         val authentication = SecurityContextHolder.getContext().authentication
-        val account = authentication.principal as Account
+        val account = authentication.principal as AccountContext
 
         model.addAttribute("username", account.username)
         model.addAttribute("exception", exception)

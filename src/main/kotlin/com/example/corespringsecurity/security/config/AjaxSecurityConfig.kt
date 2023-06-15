@@ -1,6 +1,8 @@
 package com.example.corespringsecurity.security.config
 
+import com.example.corespringsecurity.security.common.AjaxLoginAuthenticationEntryPoint
 import com.example.corespringsecurity.security.filter.AjaxLoginProcessingFilter
+import com.example.corespringsecurity.security.handler.AjaxAccessDeniedHandler
 import com.example.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler
 import com.example.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler
 import com.example.corespringsecurity.security.provider.AjaxAuthenticationProvider
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -28,15 +29,19 @@ class AjaxSecurityConfig(
     }
 
     @Bean
-    fun ajaxSecurityFilterChain(
-        http: HttpSecurity, authenticationConfiguration: AuthenticationConfiguration
-    ): SecurityFilterChain {
+    fun ajaxSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.securityMatcher("/api/**").authorizeHttpRequests {
-            it.requestMatchers("/api/login").permitAll().anyRequest().authenticated()
+            it
+                .requestMatchers("/api/messages").hasRole("USER")
+                .requestMatchers("/api/login").permitAll()
+                .anyRequest().authenticated()
         }.addFilterBefore(
             ajaxLoginProcessingFilter(http), UsernamePasswordAuthenticationFilter::class.java
         ).csrf {
             it.disable()
+        }.exceptionHandling {
+            it.accessDeniedHandler(AjaxAccessDeniedHandler())
+                .authenticationEntryPoint(AjaxLoginAuthenticationEntryPoint())
         }.build()
     }
 
