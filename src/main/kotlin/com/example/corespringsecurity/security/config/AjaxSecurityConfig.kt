@@ -1,6 +1,8 @@
 package com.example.corespringsecurity.security.config
 
 import com.example.corespringsecurity.security.filter.AjaxLoginProcessingFilter
+import com.example.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler
+import com.example.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler
 import com.example.corespringsecurity.security.provider.AjaxAuthenticationProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,6 +44,8 @@ class AjaxSecurityConfig(
     fun ajaxLoginProcessingFilter(http: HttpSecurity): AjaxLoginProcessingFilter {
         val ajaxLoginProcessingFilter = AjaxLoginProcessingFilter()
         ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager(http))
+        ajaxLoginProcessingFilter.setAuthenticationSuccessHandler(AjaxAuthenticationSuccessHandler())
+        ajaxLoginProcessingFilter.setAuthenticationFailureHandler(AjaxAuthenticationFailureHandler())
         return ajaxLoginProcessingFilter
     }
 }
