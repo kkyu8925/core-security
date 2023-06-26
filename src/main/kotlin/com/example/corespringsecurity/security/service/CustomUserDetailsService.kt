@@ -1,12 +1,12 @@
 package com.example.corespringsecurity.security.service
 
 import com.example.corespringsecurity.repository.UserRepository
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import java.util.stream.Collectors
 import kotlin.jvm.optionals.getOrElse
 
 @Service
@@ -19,9 +19,13 @@ class CustomUserDetailsService(
             throw UsernameNotFoundException("UsernameNotFoundException")
         }
 
-        val roles: MutableList<GrantedAuthority> = ArrayList()
-        roles.add(SimpleGrantedAuthority(account.role))
+        val collect = account.userRoles
+            .stream()
+            .map { it.roleName }
+            .collect(Collectors.toSet())
+            .stream().map { SimpleGrantedAuthority(it) }
+            .collect(Collectors.toList())
 
-        return AccountContext(account, roles)
+        return AccountContext(account, collect)
     }
 }

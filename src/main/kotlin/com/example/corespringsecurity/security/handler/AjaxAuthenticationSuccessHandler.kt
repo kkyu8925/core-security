@@ -1,6 +1,6 @@
 package com.example.corespringsecurity.security.handler
 
-import com.example.corespringsecurity.domain.Account
+import com.example.corespringsecurity.domain.entity.Account
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
